@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+
+<head th:replace="~{fragments/layout :: head('Lịch sử ứng tuyển - JobCode')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<section class="py-5">
+    <div class="container">
+        <div class="section-header mb-4">
+            <h2><i class="bi bi-clock-history me-2 text-primary"></i>Lịch sử ứng tuyển</h2>
+            <p th:if="${currentUser != null}" class="text-muted mb-0">
+                Xin chào, <strong th:text="${currentUser.fullName}">Applicant</strong>
+            </p>
+        </div>
+
+        <!-- Success Alert -->
+        <div th:if="${param.success}" class="alert alert-success mb-4">
+            <i class="bi bi-check-circle me-2"></i>Ứng tuyển thành công!
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(applications)}" class="empty-state">
+            <i class="bi bi-file-earmark-text d-block"></i>
+            <h5>Bạn chưa ứng tuyển công việc nào</h5>
+            <p>Hãy khám phá các công việc đang tuyển dụng và ứng tuyển ngay!</p>
+            <a th:href="@{/}" class="btn btn-primary-custom mt-2" style="width:auto;">
+                <i class="bi bi-search me-1"></i>Tìm việc làm
+            </a>
+        </div>
+
+        <!-- Table -->
+        <div class="table-custom" th:if="${!#lists.isEmpty(applications)}">
+            <table class="table table-hover mb-0">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Công việc</th>
+                    <th>Công ty</th>
+                    <th>CV</th>
+                    <th>Trạng thái</th>
+                    <th>Ngày ứng tuyển</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="app : ${applications}">
+                    <td><span class="fw-bold text-muted" th:text="${app.id}">1</span></td>
+                    <td>
+                        <a th:href="@{/jobs/{id}(id=${app.jobPosting.id})}"
+                           class="fw-semibold text-decoration-none"
+                           th:text="${app.jobPosting.title}">
+                            Java Developer
+                        </a>
+                    </td>
+                    <td>
+                        <span class="text-muted" th:text="${app.jobPosting.recruiter.companyName}">
+                            Demo Company
+                        </span>
+                    </td>
+                    <td>
+                        <a th:href="${app.cvLink}" target="_blank" class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-file-earmark-pdf me-1"></i>Xem CV
+                        </a>
+                    </td>
+                    <td>
+                        <span th:class="${app.status.name() == 'ACCEPTED' ? 'badge-active' : (app.status.name() == 'REJECTED' ? 'badge-closed' : 'badge-pending')}"
+                              th:text="${app.status}">NEW</span>
+                    </td>
+                    <td>
+                        <span class="text-muted" th:text="${#temporals.format(app.appliedAt, 'dd/MM/yyyy HH:mm')}">
+                            01/01/2026
+                        </span>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head('JobCode - Tìm việc làm')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<!-- Hero Section -->
+<section class="hero-section">
+    <div class="container position-relative" style="z-index:1;">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <span class="badge bg-white text-primary mb-3">
+                    <i class="bi bi-lightning-charge-fill me-1"></i>Nền tảng tuyển dụng #1
+                </span>
+                <h1>Tìm việc làm mơ ước<br>của bạn ngay hôm nay</h1>
+                <p class="mt-3 mb-4">Khám phá hàng ngàn cơ hội việc làm hấp dẫn từ các công ty hàng đầu. Kết nối nhà tuyển dụng với ứng viên một cách dễ dàng.</p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="#jobs" class="btn btn-light btn-lg fw-bold px-4">
+                        <i class="bi bi-search me-2"></i>Xem việc làm
+                    </a>
+                    <a th:href="@{/auth/signup}" class="btn btn-outline-light btn-lg fw-bold px-4"
+                       sec:authorize="!isAuthenticated()">
+                        <i class="bi bi-person-plus me-2"></i>Đăng ký ngay
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Job Listings -->
+<section id="jobs" class="py-5">
+    <div class="container">
+        <div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-3">
+            <div>
+                <h2><i class="bi bi-fire me-2 text-primary"></i>Việc làm nổi bật</h2>
+                <p class="text-muted mb-0">Khám phá các cơ hội việc làm đang tuyển dụng</p>
+            </div>
+            <a th:href="@{/recruiter/jobs}" class="btn btn-outline-primary fw-semibold"
+               sec:authorize="hasRole('RECRUITER')">
+                <i class="bi bi-plus-circle me-1"></i>Đăng tin tuyển dụng
+            </a>
+        </div>
+
+        <!-- Empty State -->
+        <div th:if="${#lists.isEmpty(jobs)}" class="empty-state">
+            <i class="bi bi-inbox d-block"></i>
+            <h5>Chưa có công việc nào</h5>
+            <p>Hãy quay lại sau để xem các cơ hội việc làm mới.</p>
+        </div>
+
+        <!-- Job Cards -->
+        <div class="row g-4">
+            <div class="col-lg-6" th:each="job : ${jobs}">
+                <div class="card job-card h-100">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <h5 class="job-title mb-0">
+                                <a th:href="@{/jobs/{id}(id=${job.id})}" th:text="${job.title}">Java Developer</a>
+                            </h5>
+                            <span class="badge-job-type"
+                                  th:classappend="${job.jobType.name() == 'FULL_TIME' ? 'badge-full-time' : (job.jobType.name() == 'PART_TIME' ? 'badge-part-time' : (job.jobType.name() == 'REMOTE' ? 'badge-remote' : (job.jobType.name() == 'INTERNSHIP' ? 'badge-internship' : 'badge-contract')))}"
+                                  th:text="${job.jobType}">FULL_TIME</span>
+                        </div>
+                        <p class="company-name mb-2">
+                            <i class="bi bi-building me-1"></i>
+                            <span th:text="${job.recruiter.companyName}">Demo Company</span>
+                        </p>
+                        <div class="job-meta mb-3">
+                            <span class="me-3">
+                                <i class="bi bi-geo-alt"></i>
+                                <span th:text="${job.location}">Đà Nẵng</span>
+                            </span>
+                            <span class="salary">
+                                <i class="bi bi-cash-stack"></i>
+                                <span th:text="${#numbers.formatDecimal(job.salaryMin, 0, 'COMMA', 0, 'POINT')}">1,000</span>
+                                -
+                                <span th:text="${#numbers.formatDecimal(job.salaryMax, 0, 'COMMA', 0, 'POINT')}">2,000</span>
+                                VNĐ
+                            </span>
+                        </div>
+                        <a th:href="@{/jobs/{id}(id=${job.id})}" class="btn btn-detail"
+                           th:if="${!#lists.contains(appliedJobIds, job.id)}">
+                            <i class="bi bi-arrow-right me-1"></i>Xem chi tiết
+                        </a>
+                        <span class="btn btn-success disabled"
+                              th:if="${#lists.contains(appliedJobIds, job.id)}">
+                            <i class="bi bi-check-circle me-1"></i>Đã ứng tuyển
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>

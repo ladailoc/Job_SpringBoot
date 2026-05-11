@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<head th:replace="~{fragments/layout :: head(${job.title} + ' - JobCode')}"></head>
+
+<body>
+
+<nav th:replace="~{fragments/layout :: navbar}"></nav>
+
+<!-- Detail Hero -->
+<section class="detail-hero">
+    <div class="container">
+        <div class="mb-3">
+            <a th:href="@{/}" class="text-white text-decoration-none opacity-75">
+                <i class="bi bi-arrow-left me-1"></i>Quay lại danh sách việc làm
+            </a>
+        </div>
+        <h1 th:text="${job.title}">Java Backend Developer</h1>
+        <p class="mb-0 opacity-75 mt-2">
+            <i class="bi bi-building me-1"></i>
+            <span th:text="${job.recruiter.companyName}">Demo Company</span>
+            <span class="mx-2">|</span>
+            <i class="bi bi-person me-1"></i>
+            <span th:text="${job.recruiter.fullName}">Demo Recruiter</span>
+        </p>
+    </div>
+</section>
+
+<!-- Detail Content -->
+<section class="pb-5">
+    <div class="container">
+        <div class="row g-4">
+            <!-- Main Info -->
+            <div class="col-lg-8">
+                <div class="detail-card mb-4">
+                    <h4 class="fw-bold mb-4">
+                        <i class="bi bi-info-circle me-2 text-primary"></i>Thông tin công việc
+                    </h4>
+                    <div class="row g-4">
+                        <div class="col-sm-6">
+                            <div class="info-label">Địa điểm</div>
+                            <div class="info-value">
+                                <i class="bi bi-geo-alt text-primary me-1"></i>
+                                <span th:text="${job.location}">Đà Nẵng</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="info-label">Loại công việc</div>
+                            <div class="info-value">
+                                <span class="badge-job-type badge-full-time"
+                                      th:classappend="${job.jobType.name() == 'FULL_TIME' ? 'badge-full-time' : (job.jobType.name() == 'PART_TIME' ? 'badge-part-time' : (job.jobType.name() == 'REMOTE' ? 'badge-remote' : (job.jobType.name() == 'INTERNSHIP' ? 'badge-internship' : 'badge-contract')))}"
+                                      th:text="${job.jobType}">FULL_TIME</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="info-label">Mức lương</div>
+                            <div class="info-value text-success fw-bold">
+                                <i class="bi bi-cash-stack me-1"></i>
+                                <span th:text="${#numbers.formatDecimal(job.salaryMin, 0, 'COMMA', 0, 'POINT')}">1,000</span>
+                                -
+                                <span th:text="${#numbers.formatDecimal(job.salaryMax, 0, 'COMMA', 0, 'POINT')}">1,800</span>
+                                VNĐ
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="info-label">Trạng thái</div>
+                            <div class="info-value">
+                                <span th:class="${job.active ? 'badge-active' : 'badge-closed'}">
+                                    <i th:class="${job.active ? 'bi bi-check-circle' : 'bi bi-x-circle'}" class="me-1"></i>
+                                    <span th:text="${job.active ? 'Đang tuyển' : 'Đã đóng'}">Đang tuyển</span>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="detail-card">
+                    <h4 class="fw-bold mb-3">
+                        <i class="bi bi-file-text me-2 text-primary"></i>Mô tả công việc
+                    </h4>
+                    <p th:text="${job.description}" style="line-height:1.8; white-space:pre-wrap;">Mô tả công việc...</p>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-lg-4">
+                <div class="detail-card mb-4">
+                    <h5 class="fw-bold mb-3">
+                        <i class="bi bi-briefcase me-2 text-primary"></i>Tóm tắt
+                    </h5>
+                    <ul class="list-unstyled mb-0">
+                        <li class="d-flex align-items-center py-2 border-bottom">
+                            <i class="bi bi-building text-primary me-3 fs-5"></i>
+                            <div>
+                                <small class="text-muted d-block">Công ty</small>
+                                <strong th:text="${job.recruiter.companyName}">Demo Company</strong>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-center py-2 border-bottom">
+                            <i class="bi bi-person text-primary me-3 fs-5"></i>
+                            <div>
+                                <small class="text-muted d-block">Nhà tuyển dụng</small>
+                                <strong th:text="${job.recruiter.fullName}">Demo Recruiter</strong>
+                            </div>
+                        </li>
+                        <li class="d-flex align-items-center py-2">
+                            <i class="bi bi-geo-alt text-primary me-3 fs-5"></i>
+                            <div>
+                                <small class="text-muted d-block">Địa điểm</small>
+                                <strong th:text="${job.location}">Đà Nẵng</strong>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="detail-card text-center">
+                    <th:block th:if="${#lists.contains(appliedJobIds, job.id)}">
+                        <h5 class="fw-bold mb-3">Đã ứng tuyển</h5>
+                        <p class="text-muted mb-3">Bạn đã nộp đơn cho công việc này.</p>
+                        <span class="btn btn-success w-100 disabled">
+                            <i class="bi bi-check-circle me-2"></i>Đã ứng tuyển
+                        </span>
+                    </th:block>
+                    <th:block th:unless="${#lists.contains(appliedJobIds, job.id)}">
+                        <h5 class="fw-bold mb-3">Quan tâm?</h5>
+                        <p class="text-muted mb-3">Nộp đơn ứng tuyển ngay hôm nay!</p>
+                        <a th:href="@{/jobs/{id}/apply(id=${job.id})}" class="btn btn-apply w-100"
+                           sec:authorize="hasRole('APPLICANT')">
+                            <i class="bi bi-send me-2"></i>Ứng tuyển ngay
+                        </a>
+                        <a th:href="@{/auth/login}" class="btn btn-outline-primary w-100"
+                           sec:authorize="!isAuthenticated()">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Đăng nhập để ứng tuyển
+                        </a>
+                    </th:block>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer th:replace="~{fragments/layout :: footer}"></footer>
+<div th:replace="~{fragments/layout :: scripts}"></div>
+
+</body>
+</html>
