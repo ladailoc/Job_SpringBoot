@@ -4,7 +4,7 @@
 
 <head th:replace="~{fragments/layout :: head('JobCode - Tìm việc làm')}"></head>
 
-<body>
+<body class="d-flex flex-column min-vh-100">
 
 <nav th:replace="~{fragments/layout :: navbar}"></nav>
 
@@ -19,8 +19,8 @@
                 <h1>Tìm việc làm mơ ước<br>của bạn ngay hôm nay</h1>
                 <p class="mt-3 mb-4">Khám phá hàng ngàn cơ hội việc làm hấp dẫn từ các công ty hàng đầu. Kết nối nhà tuyển dụng với ứng viên một cách dễ dàng.</p>
                 <div class="d-flex gap-3 flex-wrap">
-                    <a href="#jobs" class="btn btn-light btn-lg fw-bold px-4">
-                        <i class="bi bi-search me-2"></i>Xem việc làm
+                    <a href="#search" class="btn btn-light btn-lg fw-bold px-4">
+                        <i class="bi bi-search me-2"></i>Tìm việc ngay
                     </a>
                     <a th:href="@{/auth/signup}" class="btn btn-outline-light btn-lg fw-bold px-4"
                        sec:authorize="!isAuthenticated()">
@@ -32,13 +32,58 @@
     </div>
 </section>
 
+<!-- Search Section -->
+<section id="search" class="py-4 bg-light">
+    <div class="container">
+        <form th:action="@{/}" method="get">
+            <div class="row g-3 align-items-end">
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Từ khóa</label>
+                    <input type="text" class="form-control" name="keyword"
+                           th:value="${criteria.keyword}" placeholder="VD: Java, Frontend...">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label fw-semibold">Địa điểm</label>
+                    <input type="text" class="form-control" name="location"
+                           th:value="${criteria.location}" placeholder="VD: Đà Nẵng, TP.HCM">
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Loại công việc</label>
+                    <select class="form-select" name="jobType">
+                        <option value="">Tất cả</option>
+                        <option th:each="type : ${jobTypes}" th:value="${type}" th:text="${type}"
+                                th:selected="${criteria.jobType == type}">FULL_TIME</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label fw-semibold">Lương từ</label>
+                    <input type="number" class="form-control" step="0.01" name="minSalary"
+                           th:value="${criteria.minSalary}" placeholder="VD: 1000">
+                </div>
+                <div class="col-md-2">
+                    <button type="submit" class="btn btn-primary w-100">
+                        <i class="bi bi-search me-1"></i>Tìm kiếm
+                    </button>
+                </div>
+            </div>
+            <div class="mt-2" th:if="${criteria.keyword != null or criteria.location != null or criteria.jobType != null or criteria.minSalary != null}">
+                <a th:href="@{/}" class="text-decoration-none">
+                    <i class="bi bi-x-circle me-1"></i>Xóa bộ lọc
+                </a>
+            </div>
+        </form>
+    </div>
+</section>
+
 <!-- Job Listings -->
 <section id="jobs" class="py-5">
     <div class="container">
         <div class="section-header d-flex justify-content-between align-items-center flex-wrap gap-3">
             <div>
                 <h2><i class="bi bi-fire me-2 text-primary"></i>Việc làm nổi bật</h2>
-                <p class="text-muted mb-0">Khám phá các cơ hội việc làm đang tuyển dụng</p>
+                <p class="text-muted mb-0">
+                    Hiển thị <span th:text="${jobs.size()}">0</span> / <span th:text="${jobPage.totalElements}">0</span> kết quả
+                </p>
             </div>
             <a th:href="@{/recruiter/jobs}" class="btn btn-outline-primary fw-semibold"
                sec:authorize="hasRole('RECRUITER')">
@@ -49,8 +94,8 @@
         <!-- Empty State -->
         <div th:if="${#lists.isEmpty(jobs)}" class="empty-state">
             <i class="bi bi-inbox d-block"></i>
-            <h5>Chưa có công việc nào</h5>
-            <p>Hãy quay lại sau để xem các cơ hội việc làm mới.</p>
+            <h5>Không tìm thấy công việc phù hợp</h5>
+            <p>Hãy thử thay đổi bộ lọc hoặc quay lại sau.</p>
         </div>
 
         <!-- Job Cards -->
@@ -94,6 +139,29 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <!-- Pagination -->
+        <div th:if="${jobPage.totalPages > 1}" class="d-flex justify-content-center align-items-center gap-3 mt-4">
+            <a th:if="${jobPage.hasPrevious()}"
+               th:href="@{/(page=${jobPage.number - 1}, size=${jobPage.size},
+                           keyword=${criteria.keyword}, location=${criteria.location},
+                           jobType=${criteria.jobType}, minSalary=${criteria.minSalary})}"
+               class="btn btn-outline-primary">
+                <i class="bi bi-chevron-left me-1"></i>Trang trước
+            </a>
+
+            <span class="text-muted">
+                Trang <span th:text="${jobPage.number + 1}">1</span> / <span th:text="${jobPage.totalPages}">1</span>
+            </span>
+
+            <a th:if="${jobPage.hasNext()}"
+               th:href="@{/(page=${jobPage.number + 1}, size=${jobPage.size},
+                           keyword=${criteria.keyword}, location=${criteria.location},
+                           jobType=${criteria.jobType}, minSalary=${criteria.minSalary})}"
+               class="btn btn-outline-primary">
+                Trang sau<i class="bi bi-chevron-right ms-1"></i>
+            </a>
         </div>
     </div>
 </section>

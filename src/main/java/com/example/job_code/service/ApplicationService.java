@@ -18,11 +18,14 @@ public class ApplicationService {
 
     private final JobApplicationRepository applicationRepository;
     private final JobPostingRepository jobPostingRepository;
+    private final NotificationService notificationService;
 
     public ApplicationService(JobApplicationRepository applicationRepository,
-                              JobPostingRepository jobPostingRepository) {
+                              JobPostingRepository jobPostingRepository,
+                              NotificationService notificationService) {
         this.applicationRepository = applicationRepository;
         this.jobPostingRepository = jobPostingRepository;
+        this.notificationService = notificationService;
     }
 
     @Transactional
@@ -53,6 +56,11 @@ public class ApplicationService {
         } catch (DataIntegrityViolationException ex) {
             throw new RuntimeException("Bạn đã ứng tuyển công việc này rồi");
         }
+
+        // Notify recruiter about new application
+        String message = applicant.getFullName() + " đã ứng tuyển vào vị trí \"" + job.getTitle() + "\"";
+        String link = "/recruiter/applications";
+        notificationService.createNotification(job.getRecruiter(), message, link);
     }
 
     @Transactional(readOnly = true)
@@ -87,7 +95,19 @@ public class ApplicationService {
                 .orElseThrow(() -> new RuntimeException("Không tìm thấy đơn ứng tuyển hoặc bạn không có quyền cập nhật"));
 
         application.setStatus(status);
-
         applicationRepository.save(application);
+
+        // Notify applicant about status change
+        String statusText = switch (status) {
+            case REVIEWING -> "đang được xem xét";
+            case INTERVIEWED -> "đã được mời phỏng vấn";
+            case ACCEPTED -> "đã được chấp nhận";
+            case REJECTED -> "đã bị từ chối";
+            default -> "đã được cập nhật";
+        };
+        String message = "Đơn ứng tuyển vào vị trí \"" + application.getJobPosting().getTitle()
+                + "\" " + statusText;
+        String link = "/applicant/applications";
+        notificationService.createNotification(application.getApplicant(), message, link);
     }
 }

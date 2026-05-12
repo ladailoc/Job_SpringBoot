@@ -12,7 +12,15 @@ public interface JobApplicationRepository extends JpaRepository<JobApplication, 
 
     boolean existsByApplicantIdAndJobPostingId(Long applicantId, Long jobPostingId);
 
-    List<JobApplication> findByApplicantIdOrderByAppliedAtDesc(Long applicantId);
+    @Query("""
+            SELECT a
+            FROM JobApplication a
+            JOIN FETCH a.jobPosting j
+            LEFT JOIN FETCH j.recruiter
+            WHERE a.applicant.id = :applicantId
+            ORDER BY a.appliedAt DESC
+            """)
+    List<JobApplication> findByApplicantIdOrderByAppliedAtDesc(@Param("applicantId") Long applicantId);
 
     @Query("""
             SELECT a

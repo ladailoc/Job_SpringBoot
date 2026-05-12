@@ -25,7 +25,7 @@ public class SecurityConfig {
                         .requestMatchers("/applicant/**").hasRole("APPLICANT")
                         .requestMatchers("/jobs/*/apply").hasRole("APPLICANT")
 
-                        .requestMatchers(HttpMethod.GET, "/", "/jobs/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/", "/jobs/**", "/api/v1/jobs/**").permitAll()
 
                         .anyRequest().authenticated()
                 )

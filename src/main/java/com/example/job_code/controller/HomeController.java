@@ -1,9 +1,15 @@
 package com.example.job_code.controller;
 
+import com.example.job_code.dto.JobSearchCriteria;
 import com.example.job_code.model.JobPosting;
+import com.example.job_code.model.JobType;
 import com.example.job_code.service.ApplicationService;
 import com.example.job_code.service.CurrentUserService;
 import com.example.job_code.service.JobService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -12,7 +18,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.Collections;
-import java.util.List;
 
 @Controller
 public class HomeController {
@@ -44,10 +49,16 @@ public class HomeController {
     }
 
     @GetMapping("/")
-    public String home(Model model) {
-        List<JobPosting> jobs = jobService.getAllActiveJobs();
+    public String home(JobSearchCriteria criteria,
+                       @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                       Model model) {
 
-        model.addAttribute("jobs", jobs);
+        Page<JobPosting> jobPage = jobService.searchJobs(criteria, pageable);
+
+        model.addAttribute("jobPage", jobPage);
+        model.addAttribute("jobs", jobPage.getContent());
+        model.addAttribute("criteria", criteria);
+        model.addAttribute("jobTypes", JobType.values());
         addAppliedJobIds(model);
 
         return "home";
