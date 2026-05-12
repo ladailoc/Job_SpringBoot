@@ -50,7 +50,7 @@ public class HomeController {
 
     @GetMapping("/")
     public String home(JobSearchCriteria criteria,
-                       @PageableDefault(size = 5, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
+                       @PageableDefault(size = 6, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
                        Model model) {
 
         Page<JobPosting> jobPage = jobService.searchJobs(criteria, pageable);

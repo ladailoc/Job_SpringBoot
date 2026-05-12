@@ -3,8 +3,9 @@
     --primary: #4f46e5;
     --primary-dark: #3730a3;
     --primary-light: #818cf8;
-    --accent: #f59e0b;
-    --accent-dark: #d97706;
+    --primary-gradient: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
+    --accent: #ec4899;
+    --accent-dark: #db2777;
     --bg-light: #f8fafc;
     --bg-card: #ffffff;
     --text-primary: #1e293b;
@@ -19,6 +20,10 @@
 
 * {
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+html {
+    scroll-behavior: smooth;
 }
 
 body {
@@ -41,9 +46,12 @@ a:hover {
 
 /* ===== NAVBAR ===== */
 .navbar {
-    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%) !important;
-    box-shadow: var(--shadow-md);
-    padding: 0.8rem 0;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.95) 0%, rgba(99, 102, 241, 0.95) 100%) !important;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    box-shadow: 0 4px 30px rgba(79, 70, 229, 0.15);
+    padding: 0.6rem 0;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
 }
 
 .navbar-brand {
@@ -64,6 +72,20 @@ a:hover {
     background: rgba(255,255,255,0.15);
 }
 
+.nav-icon-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    position: relative;
+}
+
+.nav-icon-btn:hover {
+    background: rgba(255,255,255,0.2);
+}
+
 .btn-accent {
     background: var(--accent);
     color: #fff !important;
@@ -77,7 +99,102 @@ a:hover {
     background: var(--accent-dark);
     color: #fff !important;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(245,158,11,0.4);
+    box-shadow: 0 4px 12px rgba(236, 72, 153, 0.4);
+}
+
+/* User dropdown toggle */
+.user-dropdown-toggle {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.35rem 0.8rem !important;
+    border-radius: 50px !important;
+    background: rgba(255,255,255,0.1);
+}
+
+.user-dropdown-toggle:hover {
+    background: rgba(255,255,255,0.2) !important;
+}
+
+.user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: #fff;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.user-avatar::first-letter {
+    font-size: 1rem;
+}
+
+.user-avatar-lg {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: #fff;
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+
+.user-avatar-lg::first-letter {
+    font-size: 1.4rem;
+}
+
+.user-name {
+    font-weight: 600;
+    font-size: 0.9rem;
+    max-width: 120px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* User dropdown menu */
+.user-dropdown {
+    min-width: 280px;
+    padding: 0.5rem 0;
+    border: none;
+    box-shadow: var(--shadow-lg);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.dropdown-user-info {
+    padding: 1rem 1.25rem;
+    background: linear-gradient(135deg, rgba(79, 70, 229, 0.05) 0%, rgba(99, 102, 241, 0.05) 100%);
+}
+
+.role-badge {
+    font-size: 0.7rem;
+    font-weight: 600;
+    padding: 0.25rem 0.6rem;
+    border-radius: 50px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.role-recruiter {
+    background: #dbeafe;
+    color: #1d4ed8;
+}
+
+.role-applicant {
+    background: #d1fae5;
+    color: #047857;
 }
 
 .dropdown-menu {
@@ -88,7 +205,7 @@ a:hover {
 
 /* ===== HERO SECTION ===== */
 .hero-section {
-    background: linear-gradient(135deg, var(--primary) 0%, #6366f1 50%, var(--primary-dark) 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 50%, #3730a3 100%);
     color: #fff;
     padding: 5rem 0 4rem;
     position: relative;
@@ -135,6 +252,90 @@ a:hover {
     font-weight: 600;
     padding: 0.4rem 0.8rem;
     border-radius: 50px;
+}
+
+/* ===== SEARCH SECTION ===== */
+.search-section {
+    padding: 2rem 0;
+    background: linear-gradient(180deg, #eef2ff 0%, var(--bg-light) 100%);
+}
+
+.search-card {
+    background: var(--bg-card);
+    border-radius: var(--radius);
+    padding: 1.5rem 2rem;
+    box-shadow: 0 4px 24px rgba(79, 70, 229, 0.08);
+    border: 1px solid rgba(79, 70, 229, 0.08);
+}
+
+.search-card .form-label {
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.4rem;
+}
+
+.search-card .form-control,
+.search-card .form-select {
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    padding: 0.6rem 0.9rem;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+    background-color: #fafbff;
+}
+
+.search-card .form-control:focus,
+.search-card .form-select:focus {
+    border-color: var(--primary-light);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+    background-color: #fff;
+}
+
+.input-icon-wrapper {
+    position: relative;
+}
+
+.input-icon {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #cbd5e1;
+    font-size: 0.9rem;
+    z-index: 1;
+}
+
+.btn-search {
+    background: var(--primary-gradient);
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: var(--radius-sm);
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+}
+
+.btn-search:hover {
+    color: #fff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
+}
+
+.filter-clear-link {
+    display: inline-flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    font-weight: 500;
+    padding: 0.35rem 0.8rem;
+    border-radius: 50px;
+    transition: all 0.2s;
+}
+
+.filter-clear-link:hover {
+    color: #dc2626;
+    background: #fef2f2;
 }
 
 /* ===== CARDS ===== */
@@ -201,7 +402,7 @@ a:hover {
 }
 
 .job-card .btn-detail {
-    background: var(--primary);
+    background: var(--primary-gradient);
     color: #fff;
     border: none;
     padding: 0.5rem 1.5rem;
@@ -212,9 +413,9 @@ a:hover {
 }
 
 .job-card .btn-detail:hover {
-    background: var(--primary-dark);
     color: #fff;
     transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
 }
 
 /* ===== BADGES ===== */
@@ -304,11 +505,11 @@ a:hover {
 .auth-card .form-control:focus,
 .auth-card .form-select:focus {
     border-color: var(--primary-light);
-    box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
 .btn-primary-custom {
-    background: var(--primary);
+    background: var(--primary-gradient);
     color: #fff;
     border: none;
     padding: 0.7rem 2rem;
@@ -320,15 +521,14 @@ a:hover {
 }
 
 .btn-primary-custom:hover {
-    background: var(--primary-dark);
     color: #fff;
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(79,70,229,0.35);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
 }
 
 /* ===== JOB DETAIL PAGE ===== */
 .detail-hero {
-    background: linear-gradient(135deg, var(--primary) 0%, #6366f1 100%);
+    background: linear-gradient(135deg, #4f46e5 0%, #6366f1 100%);
     color: #fff;
     padding: 3rem 0 2.5rem;
     margin-bottom: 2rem;
@@ -388,7 +588,7 @@ a:hover {
 }
 
 .table-custom thead {
-    background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+    background: var(--primary-gradient);
     color: #fff;
 }
 
@@ -449,7 +649,7 @@ a:hover {
 }
 
 .btn-new-job {
-    background: var(--primary);
+    background: var(--primary-gradient);
     color: #fff;
     border: none;
     padding: 0.6rem 1.5rem;
@@ -459,10 +659,9 @@ a:hover {
 }
 
 .btn-new-job:hover {
-    background: var(--primary-dark);
     color: #fff;
     transform: translateY(-1px);
-    box-shadow: 0 4px 12px rgba(79,70,229,0.3);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
 }
 
 .btn-view-applicants {
@@ -508,7 +707,7 @@ a:hover {
 .form-card .form-control:focus,
 .form-card .form-select:focus {
     border-color: var(--primary-light);
-    box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+    box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
 }
 
 .form-card .form-check-input:checked {
@@ -517,7 +716,7 @@ a:hover {
 }
 
 .btn-save {
-    background: var(--primary);
+    background: var(--primary-gradient);
     color: #fff;
     border: none;
     padding: 0.7rem 2.5rem;
@@ -528,10 +727,9 @@ a:hover {
 }
 
 .btn-save:hover {
-    background: var(--primary-dark);
     color: #fff;
     transform: translateY(-1px);
-    box-shadow: 0 4px 14px rgba(79,70,229,0.35);
+    box-shadow: 0 4px 14px rgba(79, 70, 229, 0.35);
 }
 
 /* ===== ALERTS ===== */
@@ -639,5 +837,11 @@ a:hover {
     }
     .detail-hero h1 {
         font-size: 1.6rem;
+    }
+    .search-card {
+        padding: 1rem 1.25rem;
+    }
+    .user-dropdown {
+        min-width: 260px;
     }
 }

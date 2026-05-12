@@ -14,7 +14,7 @@
 </head>
 
 <!-- NAVBAR FRAGMENT -->
-<nav th:fragment="navbar" class="navbar navbar-expand-lg navbar-dark sticky-top">
+<nav th:fragment="navbar" class="navbar navbar-expand-lg sticky-top">
     <div class="container">
         <a class="navbar-brand fw-bold" th:href="@{/}">
             <i class="bi bi-briefcase-fill me-2"></i>JobCode
@@ -42,7 +42,7 @@
             </ul>
             <ul class="navbar-nav align-items-center">
                 <li class="nav-item" sec:authorize="isAuthenticated()">
-                    <a class="nav-link position-relative" th:href="@{/notifications}" id="notificationBell">
+                    <a class="nav-link position-relative nav-icon-btn" th:href="@{/notifications}" id="notificationBell">
                         <i class="bi bi-bell"></i>
                         <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none"
                               id="notificationBadge">
@@ -61,10 +61,24 @@
                     </a>
                 </li>
                 <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
-                        <i class="bi bi-person-circle me-1"></i>Tài khoản
+                    <a class="nav-link dropdown-toggle user-dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                        <span class="user-avatar" sec:authentication="principal.initial">L</span>
+                        <span class="user-name d-none d-lg-inline" sec:authentication="principal.fullName">Tên</span>
                     </a>
-                    <ul class="dropdown-menu dropdown-menu-end">
+                    <ul class="dropdown-menu dropdown-menu-end user-dropdown">
+                        <li class="dropdown-user-info">
+                            <div class="d-flex align-items-center">
+                                <span class="user-avatar-lg" sec:authentication="principal.initial">L</span>
+                                <div class="ms-3">
+                                    <div class="fw-bold" sec:authentication="principal.fullName">Tên người dùng</div>
+                                    <div class="text-muted small" sec:authentication="principal.email">email@example.com</div>
+                                    <span class="badge role-badge mt-1"
+                                          th:classappend="${#authentication.principal.role.name() == 'RECRUITER'} ? 'role-recruiter' : 'role-applicant'"
+                                          sec:authentication="principal.roleName">ROLE</span>
+                                </div>
+                            </div>
+                        </li>
+                        <li><hr class="dropdown-divider"></li>
                         <li>
                             <form th:action="@{/logout}" method="post">
                                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
